@@ -4,7 +4,164 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MUTEMA - Application de gestion</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ================= CSS (Le Design) ================= */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        header {
+            background-color: #1a252f;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 4px solid #1abc9c;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        header h2 {
+            font-style: italic;
+            font-size: 16px;
+            margin: 5px 0 15px 0;
+            color: #1abc9c;
+        }
+
+        .bureau-membres {
+            background-color: #2c3e50;
+            padding: 10px;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #34495e;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        nav button:hover, nav button.actif {
+            background-color: #1abc9c;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 900px;
+            margin: 20px auto;
+        }
+
+        .rubrique {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .rubrique.active {
+            display: block;
+        }
+
+        h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #1abc9c;
+            padding-bottom: 5px;
+        }
+
+        textarea, select, input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        button.action-btn {
+            background-color: #1abc9c;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        button.action-btn:hover {
+            background-color: #16a085;
+        }
+
+        button.danger-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        button.danger-btn:hover {
+            background-color: #c0392b;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            background: #ecf0f1;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 5px solid #1abc9c;
+        }
+
+        .message-court {
+            border-left-color: #3498db;
+        }
+
+        /* Styles spécifiques au règlement */
+        .article {
+            margin-bottom: 20px;
+        }
+        .article h4 {
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+        .article p {
+            margin-top: 0;
+            line-height: 1.6;
+        }
+    </style>
 </head>
 <body>
 
@@ -12,88 +169,215 @@
         <h1>MUTEMA</h1>
         <h2>Rigueur - Discipline - Entraide</h2>
         <div class="bureau-membres">
-            <p><strong>Président :</strong> [Nom à définir] | <strong>Chargé de discipline :</strong> [Nom à définir] | <strong>Trésorière :</strong> [Nom à définir]</p>
+            <span><strong>Président :</strong> [Nom à insérer]</span>
+            <span><strong>Chargé de discipline :</strong> [Nom à insérer]</span>
+            <span><strong>Trésorière :</strong> [Nom à insérer]</span>
         </div>
     </header>
 
     <nav>
-        <button onclick="afficherSection('accueil')">Accueil</button>
-        <button onclick="afficherSection('messages')">Messages</button>
-        <button onclick="verifierAcces('projets')">Projets</button>
-        <button onclick="afficherSection('retards')">Calculateur de retard</button>
-        <button onclick="afficherSection('reglement')">Règlement Intérieur</button>
-        <button onclick="verifierAcces('gestion')">Espace Gestion</button>
+        <button onclick="afficherSection('accueil', this)" class="actif">Accueil</button>
+        <button onclick="afficherSection('messages', this)">Messages</button>
+        <button onclick="verifierAcces('projets', this, 'projet123')">Projets</button>
+        <button onclick="afficherSection('retards', this)">Calculateur de retard</button>
+        <button onclick="afficherSection('reglement', this)">Règlement Intérieur</button>
+        <button onclick="verifierAcces('gestion', this, 'gestion123')">Espace Gestion</button>
     </nav>
 
     <main>
         <section id="accueil" class="rubrique active">
-            <h3>Historique des activités</h3>
+            <h3>Historique des paiements</h3>
+            <button class="danger-btn" onclick="effacerHistorique()">Effacer / Corriger l'historique (Sécurisé)</button>
             <ul id="liste-historique">
-                <li><em>Aucun paiement récent.</em></li>
+                <li id="historique-vide"><em>Aucun paiement enregistré pour le moment.</em></li>
             </ul>
         </section>
 
         <section id="messages" class="rubrique">
-            <h3>Messages Rapides</h3>
-            <textarea id="champ-message" maxlength="150" placeholder="Écrivez un message court (max 150 caractères)..."></textarea>
-            <button onclick="publierMessage()">Publier</button>
+            <h3>Messages Express</h3>
+            <p><small>Limité à 150 caractères. Allez droit au but !</small></p>
+            <textarea id="champ-message" maxlength="150" placeholder="Quoi de neuf ? (150 caractères max)..."></textarea>
+            <button class="action-btn" onclick="publierMessage()">Publier le message</button>
             <ul id="liste-messages"></ul>
         </section>
 
         <section id="projets" class="rubrique">
-            <h3>Projets de l'association</h3>
-            <p>Voici les différents projets en cours. (Espace réservé au Président et Chargé de com).</p>
-            </section>
+            <h3>Projets de l'Association</h3>
+            <p><strong>Espace réservé au Président et au Chargé de communication.</strong></p>
+            <div id="contenu-projets">
+                <p>Ici seront rédigés et détaillés les différents projets choisis par l'association MUTEMA.</p>
+                </div>
+        </section>
 
         <section id="retards" class="rubrique">
             <h3>Calculateur de retard</h3>
-            <label for="minutes-retard">Minutes de retard :</label>
-            <input type="number" id="minutes-retard" placeholder="Ex: 15">
-            <button onclick="calculerRetard()">Calculer l'amende</button>
-            <p id="resultat-retard"></p>
+            <label for="minutes-retard">Nombre de minutes de retard :</label>
+            <input type="number" id="minutes-retard" placeholder="Ex: 15" min="1">
+            <button class="action-btn" onclick="calculerRetard()">Calculer l'amende</button>
+            <div id="resultat-retard" style="margin-top: 15px; font-weight: bold; font-size: 1.2em; color: #e74c3c;"></div>
         </section>
 
         <section id="reglement" class="rubrique">
             <h3>Règlement Intérieur</h3>
             <div id="texte-reglement">
-                <h4>Préambule</h4>
-                <p>[Texte du préambule à insérer]</p>
-                <h4>Article 1</h4>
-                <p>[Texte de l'article 1 à insérer]</p>
+                <div class="article">
+                    <h4>Préambule</h4>
+                    <p>Texte du préambule de l'association MUTEMA à insérer ici...</p>
+                </div>
+                <div class="article">
+                    <h4>Article 1</h4>
+                    <p>Texte de l'article 1...</p>
+                </div>
+                <div class="article">
+                    <h4>Article 2</h4>
+                    <p>Texte de l'article 2...</p>
+                </div>
                 </div>
         </section>
 
         <section id="gestion" class="rubrique">
             <h3>Espace Gestion des Finances</h3>
             <div class="formulaire-gestion">
-                <label>Membre :</label>
+                <label>Membre ayant payé :</label>
                 <select id="gestion-membre">
                     <option value="Membre 1">Membre 1</option>
                     <option value="Membre 2">Membre 2</option>
-                    </select>
+                    <option value="Membre 3">Membre 3</option>
+                </select>
 
-                <label>Mois :</label>
+                <label>Mois concerné :</label>
                 <select id="gestion-mois">
-                    <option>Janvier</option><option>Février</option><option>Mars</option>
-                    <option>Avril</option><option>Mai</option><option>Juin</option>
-                    <option>Juillet</option><option>Août</option><option>Septembre</option>
-                    <option>Octobre</option><option>Novembre</option><option>Décembre</option>
+                    <option value="Janvier">Janvier</option>
+                    <option value="Février">Février</option>
+                    <option value="Mars">Mars</option>
+                    <option value="Avril">Avril</option>
+                    <option value="Mai">Mai</option>
+                    <option value="Juin">Juin</option>
+                    <option value="Juillet">Juillet</option>
+                    <option value="Août">Août</option>
+                    <option value="Septembre">Septembre</option>
+                    <option value="Octobre">Octobre</option>
+                    <option value="Novembre">Novembre</option>
+                    <option value="Décembre">Décembre</option>
                 </select>
 
-                <label>Type de fond :</label>
+                <label>Type de fond / Motif :</label>
                 <select id="gestion-fond">
-                    <option value="Caisse Noire (1000F)">Caisse Noire (1000F)</option>
-                    <option value="Épargne (1000F)">Épargne (1000F)</option>
-                    <option value="Maladie (5000F)">Maladie (5000F)</option>
-                    <option value="Mariage/Fiançailles (10000F)">Mariage/Fiançailles (10000F)</option>
-                    <option value="Nouvelle Naissance (3000F)">Nouvelle Naissance (3000F)</option>
+                    <option value="Caisse Noire (1000 FCFA)">Caisse Noire (1000 FCFA)</option>
+                    <option value="Épargne (1000 FCFA)">Épargne (1000 FCFA)</option>
+                    <option value="Maladie (5000 FCFA)">Maladie (5000 FCFA)</option>
+                    <option value="Mariage/Fiançailles (10000 FCFA)">Mariage/Fiançailles (10000 FCFA)</option>
+                    <option value="Nouvelle Naissance (3000 FCFA)">Nouvelle Naissance (3000 FCFA)</option>
                 </select>
 
-                <button onclick="validerPaiement()">Valider le paiement</button>
+                <button class="action-btn" onclick="validerPaiement()">Enregistrer le paiement</button>
             </div>
         </section>
     </main>
 
-    <script src="script.js"></script>
+    <script>
+        // 1. Navigation entre les onglets
+        function afficherSection(idSection, bouton) {
+            // Cacher toutes les sections
+            document.querySelectorAll('.rubrique').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Enlever la couleur active de tous les boutons
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('actif');
+            });
+
+            // Afficher la bonne section et colorer le bouton
+            document.getElementById(idSection).classList.add('active');
+            if(bouton) bouton.classList.add('actif');
+        }
+
+        // 2. Sécurité basique par mot de passe
+        function verifierAcces(idSection, bouton, bonMotDePasse) {
+            let saisie = prompt("Zone sécurisée. Veuillez entrer le code d'accès :");
+            
+            if (saisie === bonMotDePasse) {
+                afficherSection(idSection, bouton);
+            } else if (saisie !== null) {
+                alert("Code d'accès incorrect !");
+            }
+        }
+
+        // 3. Gestion de l'historique (avec code d'accès)
+        function effacerHistorique() {
+            let saisie = prompt("Code d'accès pour modifier l'historique :");
+            if(saisie === "admin123") {
+                document.getElementById('liste-historique').innerHTML = '<li id="historique-vide"><em>Aucun paiement enregistré pour le moment.</em></li>';
+                alert("Historique effacé avec succès.");
+            } else if (saisie !== null) {
+                alert("Code incorrect, impossible de modifier l'historique.");
+            }
+        }
+
+        // 4. Ajouter un paiement depuis la gestion vers l'accueil
+        function validerPaiement() {
+            const membre = document.getElementById('gestion-membre').value;
+            const mois = document.getElementById('gestion-mois').value;
+            const fond = document.getElementById('gestion-fond').value;
+            
+            // Obtenir la date du jour
+            const dateDuJour = new Date().toLocaleDateString('fr-FR');
+
+            const textePaiement = `✅ Le ${dateDuJour} : ${membre} a payé la rubrique "${fond}" pour le mois de ${mois}.`;
+
+            // Retirer le message "vide" si c'est le premier paiement
+            const historiqueVide = document.getElementById('historique-vide');
+            if(historiqueVide) {
+                historiqueVide.remove();
+            }
+
+            // Créer l'élément de liste et l'ajouter en haut
+            const nouvelElement = document.createElement('li');
+            nouvelElement.textContent = textePaiement;
+            
+            const listeHistorique = document.getElementById('liste-historique');
+            listeHistorique.insertBefore(nouvelElement, listeHistorique.firstChild);
+
+            alert("Paiement validé ! Il s'affiche maintenant sur la page d'Accueil.");
+            
+            // Rediriger vers l'accueil pour voir le résultat
+            afficherSection('accueil', document.querySelector('nav button'));
+        }
+
+        // 5. Messages courts façon Twitter
+        function publierMessage() {
+            const champ = document.getElementById('champ-message');
+            const texte = champ.value;
+            
+            if(texte.trim() !== "") {
+                const liste = document.getElementById('liste-messages');
+                const nouveauMessage = document.createElement('li');
+                nouveauMessage.className = "message-court";
+                
+                const dateHeure = new Date().toLocaleString('fr-FR', { hour: '2-digit', minute:'2-digit', day:'2-digit', month:'2-digit' });
+                nouveauMessage.innerHTML = `<strong>[${dateHeure}]</strong> ${texte}`;
+                
+                liste.insertBefore(nouveauMessage, liste.firstChild);
+                champ.value = ""; // On vide le champ après publication
+            } else {
+                alert("Le message est vide !");
+            }
+        }
+
+        // 6. Calculateur de retard
+        function calculerRetard() {
+            const minutes = document.getElementById('minutes-retard').value;
+            // DÉFINIS LE PRIX DE LA MINUTE ICI (Exemple: 100 FCFA par minute)
+            const amendeParMinute = 100; 
+            
+            if(minutes && minutes > 0) {
+                const total = minutes * amendeParMinute;
+                document.getElementById('resultat-retard').textContent = 
+                    `Pour ${minutes} minute(s) de retard, l'amende s'élève à : ${total} FCFA.`;
+            } else {
+                document.getElementById('resultat-retard').textContent = "";
+            }
+        }
+    </script>
 </body>
 </html>

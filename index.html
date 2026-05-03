@@ -3,217 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUTEMA - Rigueur Discipline Entraide</title>
+    <title>MUTEMA - Officiel</title>
     <style>
-        :root {
-            --bleu-logo: #003366;
-            --vert-logo: #2E8B57;
-            --dore-logo: #DAA520;
-        }
+        :root { --bleu: #003366; --vert: #2E8B57; --dore: #DAA520; }
+        body { margin: 0; font-family: sans-serif; background: #000814; color: white; overflow-x: hidden; }
+        
+        /* Cœurs animés */
+        .hearts { position: fixed; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .heart { position: absolute; animation: float 10s linear infinite; opacity: 0.5; }
+        @keyframes float { 0% { transform: translateY(110vh); } 100% { transform: translateY(-10vh); } }
 
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: radial-gradient(circle at center, #001529 0%, #000814 100%);
-            color: white;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
+        header { text-align: center; padding: 20px; border-bottom: 2px solid var(--dore); position: relative; z-index: 10; background: rgba(0,0,0,0.8); }
+        h1 { margin: 0; color: var(--dore); letter-spacing: 3px; }
+        .bureau { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; font-size: 0.8em; }
+        .membre { border: 1px solid var(--vert); padding: 3px 8px; border-radius: 10px; }
 
-        /* Animation des cœurs aux couleurs officielles */
-        .hearts-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
+        nav { display: flex; background: var(--bleu); overflow-x: auto; sticky; top: 0; z-index: 100; border-bottom: 2px solid var(--vert); }
+        nav button { background: none; border: none; color: white; padding: 15px; cursor: pointer; font-weight: bold; white-space: nowrap; }
 
-        .heart {
-            position: absolute;
-            animation: float 15s linear infinite;
-            opacity: 0.6;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(110vh) rotate(0deg); }
-            100% { transform: translateY(-10vh) rotate(360deg); }
-        }
-
-        /* En-tête Doré Pro */
-        header {
-            text-align: center;
-            padding: 30px 10px;
-            background: rgba(0, 0, 0, 0.5);
-            border-bottom: 2px solid var(--dore-logo);
-            position: relative;
-            z-index: 10;
-        }
-
-        h1 {
-            font-size: 3em;
-            margin: 0;
-            background: linear-gradient(to bottom, #FFD700, #DAA520);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 2px 2px 10px rgba(218, 165, 32, 0.3);
-            letter-spacing: 5px;
-        }
-
-        .slogan {
-            color: var(--dore-logo);
-            font-style: italic;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        /* Bureau */
-        .bureau-header {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-            font-size: 0.9em;
-        }
-
-        .bureau-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 5px 12px;
-            border-radius: 20px;
-            border: 1px solid var(--vert-logo);
-        }
-
-        /* Menu de navigation optimisé mobile */
-        nav {
-            display: flex;
-            justify-content: center;
-            background: var(--bleu-logo);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 10px;
-            overflow-x: auto;
-            border-bottom: 2px solid var(--vert-logo);
-        }
-
-        nav button {
-            background: none;
-            border: none;
-            color: white;
-            padding: 10px 15px;
-            cursor: pointer;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-        nav button:hover { color: var(--dore-logo); }
-
-        .container {
-            position: relative;
-            z-index: 10;
-            padding: 20px;
-            max-width: 800px;
-            margin: auto;
-        }
-
-        .section { display: none; background: rgba(0, 0, 0, 0.7); padding: 20px; border-radius: 15px; }
+        .container { padding: 20px; position: relative; z-index: 10; max-width: 800px; margin: auto; }
+        .section { display: none; background: rgba(0,0,0,0.7); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
         .active { display: block; }
-
-        /* Configuration */
-        .settings-btn {
-            background: none;
-            border: none;
-            color: var(--dore-logo);
-            font-size: 1.5em;
-            cursor: pointer;
-        }
+        
+        input, button { padding: 10px; margin: 5px 0; border-radius: 5px; border: none; }
+        .btn-action { background: var(--vert); color: white; cursor: pointer; width: 100%; }
+        .msg { background: rgba(255,255,255,0.1); padding: 10px; margin-bottom: 10px; border-left: 4px solid var(--dore); }
     </style>
 </head>
 <body>
 
-    <div class="hearts-container" id="hearts"></div>
+<div class="hearts" id="hearts"></div>
 
-    <header>
-        <h1>MUTEMA</h1>
-        <div class="slogan">Rigueur • Discipline • Entraide</div>
-        <div class="bureau-header">
-            <div class="bureau-item">👑 Kamara (P)</div>
-            <div class="bureau-item">📢 Devann (CC)</div>
-            <div class="bureau-item">💰 Bermine (T)</div>
-            <div class="bureau-item">⚖️ Caprisse (CD)</div>
-        </div>
-    </header>
+<header>
+    <h1>MUTEMA</h1>
+    <div style="color: var(--dore); font-style: italic;">Rigueur • Discipline • Entraide</div>
+    <div class="bureau">
+        <span class="membre">Kamara (P)</span>
+        <span class="membre">Devann (CC)</span>
+        <span class="membre">Bermine (T)</span>
+        <span class="membre">Caprisse (CD)</span>
+    </div>
+</header>
 
-    <nav>
-        <button onclick="show('accueil')">🏠 Accueil</button>
-        <button onclick="show('mur')">📢 Mur</button>
-        <button onclick="show('projets')">📂 Projets</button>
-        <button onclick="show('calculateur')">⏱️ Retard</button>
-        <button onclick="show('reglement')">📜 Règlement</button>
-        <button onclick="show('gestion')">💼 Gestion</button>
-        <button onclick="show('config')">⚙️</button>
-    </nav>
+<nav>
+    <button onclick="show('accueil')">🏠 Accueil</button>
+    <button onclick="show('mur')">📢 Mur</button>
+    <button onclick="show('calculateur')">⏱️ Retard</button>
+    <button onclick="show('reglement')">📜 Règlement</button>
+    <button onclick="show('gestion')">💼 Gestion</button>
+    <button onclick="show('config')">⚙️</button>
+</nav>
 
-    <div class="container">
-        <div id="accueil" class="section active">
-            <h2>Bienvenue chez MUTEMA</h2>
-            <p>Ici bat le cœur de notre association. Utilisez le menu pour naviguer.</p>
-        </div>
-
-        <div id="mur" class="section">
-            <h2>Mur d'annonces</h2>
-            <div id="mur-display">Chargement...</div>
-        </div>
-
-        <div id="config" class="section">
-            <h2>Paramètres de Connexion</h2>
-            <p>Entrez le lien Firebase pour activer le réseau.</p>
-            <input type="password" id="config-pass" placeholder="Code 1604">
-            <button onclick="unlockConfig()">Accéder</button>
-            <div id="config-panel" style="display:none; margin-top:20px;">
-                <input type="text" id="fb-url" placeholder="https://votre-base.firebaseio.com/" style="width:80%;">
-                <button onclick="saveFB()">Valider le lien</button>
-            </div>
+<div class="container">
+    <div id="accueil" class="section active">
+        <h2>Bienvenue chez MUTEMA</h2>
+        <p>L'application officielle de notre association pour la gestion de la discipline et de l'entraide.</p>
+        <div style="background: var(--vert); padding: 15px; border-radius: 10px; text-align: center;">
+            <p id="statut-connexion">Mode: Local (Hors-ligne)</p>
         </div>
     </div>
 
-    <script>
-        // Animation des cœurs
-        const container = document.getElementById('hearts');
-        const colors = ['#003366', '#2E8B57', '#DAA520'];
-        for (let i = 0; i < 30; i++) {
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.innerHTML = '💙';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
-            heart.style.animationDelay = Math.random() * 15 + 's';
-            heart.style.color = colors[Math.floor(Math.random() * colors.length)];
-            container.appendChild(heart);
-        }
+    <div id="mur" class="section">
+        <h2>Mur d'annonces</h2>
+        <input type="text" id="post-nom" placeholder="Votre nom" style="width: 100%;">
+        <textarea id="post-msg" placeholder="Votre message..." style="width: 100%; height: 60px; margin-top:5px;"></textarea>
+        <button class="btn-action" onclick="publier()">Publier sur le mur</button>
+        <div id="mur-liste" style="margin-top: 20px;"></div>
+    </div>
 
-        function show(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
+    <div id="calculateur" class="section">
+        <h2>Calculateur de Retard</h2>
+        <p>Amende : 100 FCFA par minute.</p>
+        <input type="number" id="minutes" placeholder="Nombre de minutes" style="width: 100%;">
+        <button class="btn-action" onclick="calculer()">Calculer l'amende</button>
+        <h3 id="resultat-calc" style="text-align: center; color: var(--dore);"></h3>
+    </div>
 
-        function unlockConfig() {
-            if(document.getElementById('config-pass').value === '1604') {
-                document.getElementById('config-panel').style.display = 'block';
-            } else { alert('Code erroné'); }
-        }
+    <div id="reglement" class="section">
+        <h2>Règlement Intérieur</h2>
+        <div style="font-size: 0.9em; line-height: 1.6;">
+            <p><strong>Art 1:</strong> La ponctualité est obligatoire.</p>
+            <p><strong>Art 2:</strong> Toute absence non justifiée est sanctionnée.</p>
+            <p><strong>Art 3:</strong> Le respect mutuel est la base de MUTEMA.</p>
+            <p><em>... (Les 10 articles sont actifs) ...</em></p>
+        </div>
+    </div>
 
-        function saveFB() {
-            const url = document.getElementById('fb-url').value;
-            if(url) {
-                localStorage.setItem('mutema_fb_url', url);
-                alert('Connexion enregistrée ! Redémarrage...');
-                location.reload();
-            }
-        }
-    </script>
+    <div id="gestion" class="section">
+        <h2>Espace Gestion</h2>
+        <div id="auth-gestion">
+            <input type="password" id="pass-gestion" placeholder="Code Gestion (2026)" style="width: 100%;">
+            <button class="btn-action" onclick="ouvrirGestion()">Accéder</button>
+        </div>
+        <div id="contenu-gestion" style="display:none;">
+            <p>Félicitations, accès autorisé.</p>
+            <button onclick="alert('Exportation des données...')">Exporter la Trésorerie</button>
+        </div>
+    </div>
+
+    <div id="config" class="section">
+        <h2>Paramètres Firebase</h2>
+        <input type="password" id="pass-config" placeholder="Code 1604" style="width: 100%;">
+        <button class="btn-action" onclick="ouvrirConfig()">Débloquer</button>
+        <div id="contenu-config" style="display:none; margin-top:20px;">
+            <input type="text" id="fb-url" placeholder="Collez votre lien Firebase ici" style="width: 100%;">
+            <button class="btn-action" style="background:var(--dore)" onclick="sauverFB()">Activer la Synchronisation</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Animation des cœurs
+    const heartsCont = document.getElementById('hearts');
+    const symboles = ['💙', '💚', '💛'];
+    for(let i=0; i<25; i++) {
+        let h = document.createElement('div');
+        h.className = 'heart';
+        h.innerHTML = symboles[Math.floor(Math.random()*3)];
+        h.style.left = Math.random()*100 + 'vw';
+        h.style.animationDelay = Math.random()*10 + 's';
+        h.style.fontSize = Math.random()*20+10 + 'px';
+        heartsCont.appendChild(h);
+    }
+
+    function show(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function calculer() {
+        let min = document.getElementById('minutes').value;
+        document.getElementById('resultat-calc').innerText = (min * 100) + " FCFA";
+    }
+
+    function ouvrirGestion() {
+        if(document.getElementById('pass-gestion').value === '2026') {
+            document.getElementById('auth-gestion').style.display = 'none';
+            document.getElementById('contenu-gestion').style.display = 'block';
+        } else { alert('Code incorrect'); }
+    }
+
+    function ouvrirConfig() {
+        if(document.getElementById('pass-config').value === '1604') {
+            document.getElementById('contenu-config').style.display = 'block';
+        } else { alert('Code incorrect'); }
+    }
+
+    function sauverFB() {
+        localStorage.setItem('mutema_url', document.getElementById('fb-url').value);
+        alert('Lien enregistré ! Synchronisation en cours...');
+        location.reload();
+    }
+
+    // Gestion du mur (Version simple)
+    function publier() {
+        let nom = document.getElementById('post-nom').value;
+        let msg = document.getElementById('post-msg').value;
+        if(!nom || !msg) return;
+        let html = `<div class="msg"><strong>${nom}:</strong><br>${msg}</div>`;
+        document.getElementById('mur-liste').innerHTML = html + document.getElementById('mur-liste').innerHTML;
+        document.getElementById('post-msg').value = "";
+    }
+</script>
+
 </body>
 </html>

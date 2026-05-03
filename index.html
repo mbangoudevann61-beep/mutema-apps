@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUTEMA - Application de gestion</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>MUTEMA</h1>
+        <h2>Rigueur - Discipline - Entraide</h2>
+        <div class="bureau-membres">
+            <p><strong>Président :</strong> [Nom à définir] | <strong>Chargé de discipline :</strong> [Nom à définir] | <strong>Trésorière :</strong> [Nom à définir]</p>
+        </div>
+    </header>
+
+    <nav>
+        <button onclick="afficherSection('accueil')">Accueil</button>
+        <button onclick="afficherSection('messages')">Messages</button>
+        <button onclick="verifierAcces('projets')">Projets</button>
+        <button onclick="afficherSection('retards')">Calculateur de retard</button>
+        <button onclick="afficherSection('reglement')">Règlement Intérieur</button>
+        <button onclick="verifierAcces('gestion')">Espace Gestion</button>
+    </nav>
+
+    <main>
+        <section id="accueil" class="rubrique active">
+            <h3>Historique des activités</h3>
+            <ul id="liste-historique">
+                <li><em>Aucun paiement récent.</em></li>
+            </ul>
+        </section>
+
+        <section id="messages" class="rubrique">
+            <h3>Messages Rapides</h3>
+            <textarea id="champ-message" maxlength="150" placeholder="Écrivez un message court (max 150 caractères)..."></textarea>
+            <button onclick="publierMessage()">Publier</button>
+            <ul id="liste-messages"></ul>
+        </section>
+
+        <section id="projets" class="rubrique">
+            <h3>Projets de l'association</h3>
+            <p>Voici les différents projets en cours. (Espace réservé au Président et Chargé de com).</p>
+            </section>
+
+        <section id="retards" class="rubrique">
+            <h3>Calculateur de retard</h3>
+            <label for="minutes-retard">Minutes de retard :</label>
+            <input type="number" id="minutes-retard" placeholder="Ex: 15">
+            <button onclick="calculerRetard()">Calculer l'amende</button>
+            <p id="resultat-retard"></p>
+        </section>
+
+        <section id="reglement" class="rubrique">
+            <h3>Règlement Intérieur</h3>
+            <div id="texte-reglement">
+                <h4>Préambule</h4>
+                <p>[Texte du préambule à insérer]</p>
+                <h4>Article 1</h4>
+                <p>[Texte de l'article 1 à insérer]</p>
+                </div>
+        </section>
+
+        <section id="gestion" class="rubrique">
+            <h3>Espace Gestion des Finances</h3>
+            <div class="formulaire-gestion">
+                <label>Membre :</label>
+                <select id="gestion-membre">
+                    <option value="Membre 1">Membre 1</option>
+                    <option value="Membre 2">Membre 2</option>
+                    </select>
+
+                <label>Mois :</label>
+                <select id="gestion-mois">
+                    <option>Janvier</option><option>Février</option><option>Mars</option>
+                    <option>Avril</option><option>Mai</option><option>Juin</option>
+                    <option>Juillet</option><option>Août</option><option>Septembre</option>
+                    <option>Octobre</option><option>Novembre</option><option>Décembre</option>
+                </select>
+
+                <label>Type de fond :</label>
+                <select id="gestion-fond">
+                    <option value="Caisse Noire (1000F)">Caisse Noire (1000F)</option>
+                    <option value="Épargne (1000F)">Épargne (1000F)</option>
+                    <option value="Maladie (5000F)">Maladie (5000F)</option>
+                    <option value="Mariage/Fiançailles (10000F)">Mariage/Fiançailles (10000F)</option>
+                    <option value="Nouvelle Naissance (3000F)">Nouvelle Naissance (3000F)</option>
+                </select>
+
+                <button onclick="validerPaiement()">Valider le paiement</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

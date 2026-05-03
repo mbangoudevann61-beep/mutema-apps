@@ -212,7 +212,6 @@
         .message-court { border-left-color: #0a2d5a; }
         .annonce-officielle { border-left-color: #5b9e38; }
 
-        /* Style spécifique pour l'affichage des projets */
         .projet-carte {
             background: rgba(255, 255, 255, 0.05);
             padding: 20px;
@@ -229,21 +228,18 @@
 
         .projet-carte p {
             color: #ecf0f1;
-            white-space: pre-wrap; /* Conserve les sauts de ligne */
+            white-space: pre-wrap; 
         }
 
-        /* ================= ADAPTATION POUR MOBILE (SMARTPHONES) ================= */
+        /* ================= ADAPTATION MOBILE ================= */
         @media (max-width: 768px) {
             header h1 { font-size: 2.2em; letter-spacing: 2px; }
             header h2 { font-size: 12px; }
-            
             .bureau-membres { flex-direction: column; text-align: center; gap: 8px; }
             .bureau-membres span { display: block; }
-            
             nav { flex-direction: column; padding: 0; }
             nav button { width: 100%; text-align: left; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
             nav button:hover, nav button.actif { border-bottom: 1px solid #c19b48; padding-left: 25px; }
-            
             main { padding: 10px; margin: 10px auto; }
             .rubrique { padding: 15px; }
             h3 { font-size: 1.4em; }
@@ -287,7 +283,7 @@
             <h3>Historique des paiements</h3>
             <button class="danger-btn" onclick="effacerHistorique()">Effacer l'historique (Sécurisé)</button>
             <ul id="liste-historique">
-                <li id="historique-vide"><em>Aucun paiement enregistré pour le moment.</em></li>
+                <li id="historique-vide"><em>Chargement des données...</em></li>
             </ul>
         </section>
 
@@ -296,7 +292,9 @@
             <p><small>Limité à 150 caractères. Allez droit au but !</small></p>
             <textarea id="champ-message" maxlength="150" placeholder="Quoi de neuf ? (150 caractères max)..."></textarea>
             <button class="action-btn" onclick="publierMessage()">Publier le message</button>
-            <ul id="liste-messages"></ul>
+            <ul id="liste-messages">
+                <li id="message-vide"><em>Chargement des messages...</em></li>
+            </ul>
         </section>
 
         <section id="mur" class="rubrique">
@@ -307,7 +305,7 @@
                 <button class="action-btn" onclick="publierAnnonce()">Publier l'annonce</button>
             </div>
             <ul id="liste-annonces">
-                <li id="mur-vide"><em>Aucune annonce officielle pour le moment.</em></li>
+                <li id="mur-vide"><em>Chargement des annonces...</em></li>
             </ul>
         </section>
 
@@ -326,8 +324,7 @@
 
             <div id="liste-projets">
                 <div id="projet-vide" class="projet-carte">
-                    <h4>Aucun projet en cours</h4>
-                    <p>Les projets rédigés par le bureau apparaîtront ici.</p>
+                    <h4>Chargement des projets...</h4>
                 </div>
             </div>
         </section>
@@ -387,148 +384,155 @@
         </section>
     </main>
 
-    <script>
-        // NAVIGATION GÉNÉRALE
-        function afficherSection(idSection, bouton) {
+    <script type="module">
+        // 1. Initialisation de Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCSDJym8wBdLKwo2mRQL2LvJUAKZgSEZRg",
+            authDomain: "mutema-app.firebaseapp.com",
+            projectId: "mutema-app",
+            storageBucket: "mutema-app.firebasestorage.app",
+            messagingSenderId: "651266231790",
+            appId: "1:651266231790:web:0df29e38760248b88d12ff"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 2. Fonctions d'interface (Rendues globales pour le HTML)
+        window.afficherSection = function(idSection, bouton) {
             document.querySelectorAll('.rubrique').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('nav button').forEach(b => b.classList.remove('actif'));
             document.getElementById(idSection).classList.add('active');
             if(bouton) bouton.classList.add('actif');
         }
 
-        // SÉCURITÉ DES ONGLETS COMPLETS (ex: Gestion et Mur avec 1604)
-        function verifierAcces(idSection, bouton, codeSecret) {
+        window.verifierAcces = function(idSection, bouton, codeSecret) {
             let saisie = prompt("Zone sécurisée. Code d'accès :");
-            if (saisie === codeSecret) {
-                afficherSection(idSection, bouton);
-            } else if (saisie !== null) {
-                alert("Code d'accès incorrect !");
-            }
+            if (saisie === codeSecret) { window.afficherSection(idSection, bouton); } 
+            else if (saisie !== null) { alert("Code d'accès incorrect !"); }
         }
 
-        // ================= GESTION DES PROJETS (Code: 2026) =================
-        function ouvrirRedactionProjet() {
+        window.ouvrirRedactionProjet = function() {
             let saisie = prompt("Code d'accès requis (Président & Com) :");
-            if (saisie === "2026") {
-                // Si le code est bon, on affiche le formulaire
-                document.getElementById('zone-redaction-projet').style.display = 'block';
-            } else if (saisie !== null) {
-                alert("Code d'accès incorrect !");
-            }
+            if (saisie === "2026") { document.getElementById('zone-redaction-projet').style.display = 'block'; } 
+            else if (saisie !== null) { alert("Code d'accès incorrect !"); }
         }
 
-        function enregistrerProjet() {
-            const titre = document.getElementById('titre-projet').value;
-            const texte = document.getElementById('texte-projet').value;
-
-            if(titre.trim() !== "" && texte.trim() !== "") {
-                const zoneProjets = document.getElementById('liste-projets');
-                
-                // Enlever le message "Aucun projet" s'il est là
-                const projetVide = document.getElementById('projet-vide');
-                if(projetVide) projetVide.remove();
-
-                // Création de la carte du projet
-                const divProjet = document.createElement('div');
-                divProjet.className = "projet-carte";
-
-                const h4 = document.createElement('h4');
-                h4.textContent = titre;
-
-                const p = document.createElement('p');
-                p.textContent = texte;
-
-                const dateHeure = new Date().toLocaleDateString('fr-FR');
-                const petitTexte = document.createElement('small');
-                petitTexte.style.color = "#bdc3c7";
-                petitTexte.textContent = "Projet publié le " + dateHeure;
-
-                // Assemblage
-                divProjet.appendChild(h4);
-                divProjet.appendChild(p);
-                divProjet.appendChild(petitTexte);
-
-                // Ajout en haut de la liste
-                zoneProjets.prepend(divProjet);
-
-                // Réinitialisation du formulaire
-                document.getElementById('titre-projet').value = "";
-                document.getElementById('texte-projet').value = "";
-                document.getElementById('zone-redaction-projet').style.display = 'none'; // On recache le formulaire
-
-                alert("Projet enregistré et publié avec succès !");
-            } else {
-                alert("Veuillez remplir le titre et les détails du projet.");
-            }
-        }
-
-        // ================= AUTRES FONCTIONNALITÉS =================
-        function validerPaiement() {
-            const membre = document.getElementById('gestion-membre').value;
-            const mois = document.getElementById('gestion-mois').value;
-            const fond = document.getElementById('gestion-fond').value;
-            const date = new Date().toLocaleDateString('fr-FR');
-            
-            const texte = `✅ ${date} : ${membre} a payé [${fond}] pour ${mois}.`;
-            if(document.getElementById('historique-vide')) {
-                document.getElementById('historique-vide').remove();
-            }
-            
-            const li = document.createElement('li');
-            li.textContent = texte;
-            document.getElementById('liste-historique').prepend(li);
-            
-            alert("Paiement validé !");
-            afficherSection('accueil', document.querySelector('nav button'));
-        }
-
-        function effacerHistorique() {
-            if(prompt("Code administrateur :") === "admin123") {
-                document.getElementById('liste-historique').innerHTML = '<li id="historique-vide"><em>Aucun paiement enregistré.</em></li>';
-                alert("Historique effacé.");
-            }
-        }
-
-        function publierAnnonce() {
-            const texte = document.getElementById('champ-annonce').value;
-            if(texte.trim() !== "") {
-                const li = document.createElement('li');
-                li.className = "annonce-officielle"; 
-                const dateHeure = new Date().toLocaleString('fr-FR', { hour: '2-digit', minute:'2-digit', day:'2-digit', month:'2-digit' });
-                li.innerHTML = `📢 <strong>[${dateHeure}] ANNONCE OFFICIELLE :</strong> ${texte}`;
-                if(document.getElementById('mur-vide')) {
-                    document.getElementById('mur-vide').remove();
-                }
-                document.getElementById('liste-annonces').prepend(li);
-                document.getElementById('champ-annonce').value = ""; 
-                alert("Annonce publiée !");
-            } else { 
-                alert("L'annonce est vide."); 
-            }
-        }
-
-        function publierMessage() {
-            const texte = document.getElementById('champ-message').value;
-            if(texte.trim() !== "") {
-                const li = document.createElement('li');
-                li.className = "message-court";
-                const dateHeure = new Date().toLocaleString('fr-FR', { hour: '2-digit', minute:'2-digit', day:'2-digit', month:'2-digit' });
-                li.innerHTML = `💬 <strong>[${dateHeure}]</strong> ${texte}`;
-                document.getElementById('liste-messages').prepend(li);
-                document.getElementById('champ-message').value = ""; 
-            }
-        }
-
-        function calculerRetard() {
+        window.calculerRetard = function() {
             const min = parseInt(document.getElementById('minutes-retard').value);
             if(min > 0) {
                 const tranches = Math.ceil(min / 30);
                 const amende = 500 * Math.pow(2, tranches - 1);
                 document.getElementById('resultat-retard').textContent = `Amende totale : ${amende} FCFA.`;
-            } else { 
-                document.getElementById('resultat-retard').textContent = ""; 
+            } else { document.getElementById('resultat-retard').textContent = ""; }
+        }
+
+        // 3. Fonctions d'enregistrement vers Firebase
+        window.validerPaiement = async function() {
+            const membre = document.getElementById('gestion-membre').value;
+            const mois = document.getElementById('gestion-mois').value;
+            const fond = document.getElementById('gestion-fond').value;
+            const date = new Date().toLocaleDateString('fr-FR');
+            const texte = `✅ ${date} : ${membre} a payé [${fond}] pour ${mois}.`;
+            
+            try {
+                await addDoc(collection(db, "historique"), { texte: texte, timestamp: Date.now() });
+                alert("Paiement validé et sauvegardé !");
+                window.afficherSection('accueil', document.querySelector('nav button'));
+            } catch (e) { alert("Erreur lors de la sauvegarde : " + e.message); }
+        }
+
+        window.publierAnnonce = async function() {
+            const texte = document.getElementById('champ-annonce').value;
+            if(texte.trim() !== "") {
+                const dateHeure = new Date().toLocaleString('fr-FR', { hour: '2-digit', minute:'2-digit', day:'2-digit', month:'2-digit' });
+                const contenu = `📢 <strong>[${dateHeure}] ANNONCE OFFICIELLE :</strong> ${texte}`;
+                try {
+                    await addDoc(collection(db, "annonces"), { texte: contenu, timestamp: Date.now() });
+                    document.getElementById('champ-annonce').value = ""; 
+                    alert("Annonce publiée !");
+                } catch (e) { alert("Erreur : " + e.message); }
+            } else { alert("L'annonce est vide."); }
+        }
+
+        window.publierMessage = async function() {
+            const texte = document.getElementById('champ-message').value;
+            if(texte.trim() !== "") {
+                const dateHeure = new Date().toLocaleString('fr-FR', { hour: '2-digit', minute:'2-digit', day:'2-digit', month:'2-digit' });
+                const contenu = `💬 <strong>[${dateHeure}]</strong> ${texte}`;
+                try {
+                    await addDoc(collection(db, "messages"), { texte: contenu, timestamp: Date.now() });
+                    document.getElementById('champ-message').value = ""; 
+                } catch (e) { console.error("Erreur : ", e); }
             }
         }
+
+        window.enregistrerProjet = async function() {
+            const titre = document.getElementById('titre-projet').value;
+            const texte = document.getElementById('texte-projet').value;
+            if(titre.trim() !== "" && texte.trim() !== "") {
+                const dateHeure = new Date().toLocaleDateString('fr-FR');
+                try {
+                    await addDoc(collection(db, "projets"), { titre: titre, texte: texte, date: dateHeure, timestamp: Date.now() });
+                    document.getElementById('titre-projet').value = "";
+                    document.getElementById('texte-projet').value = "";
+                    document.getElementById('zone-redaction-projet').style.display = 'none';
+                    alert("Projet enregistré et publié avec succès !");
+                } catch (e) { alert("Erreur : " + e.message); }
+            } else { alert("Veuillez remplir le titre et les détails."); }
+        }
+
+        window.effacerHistorique = async function() {
+            if(prompt("Code administrateur :") === "admin123") {
+                const querySnapshot = await getDocs(collection(db, "historique"));
+                querySnapshot.forEach((doc) => { deleteDoc(doc.ref); });
+                alert("Historique effacé de la base de données.");
+            }
+        }
+
+        // 4. Synchronisation en temps réel depuis Firebase vers l'affichage
+        // Historique
+        onSnapshot(query(collection(db, "historique"), orderBy("timestamp", "desc")), (snapshot) => {
+            const liste = document.getElementById('liste-historique');
+            liste.innerHTML = "";
+            if (snapshot.empty) { liste.innerHTML = '<li id="historique-vide"><em>Aucun paiement enregistré pour le moment.</em></li>'; } 
+            else { snapshot.forEach((doc) => { const li = document.createElement('li'); li.textContent = doc.data().texte; liste.appendChild(li); }); }
+        });
+
+        // Annonces (Mur)
+        onSnapshot(query(collection(db, "annonces"), orderBy("timestamp", "desc")), (snapshot) => {
+            const liste = document.getElementById('liste-annonces');
+            liste.innerHTML = "";
+            if (snapshot.empty) { liste.innerHTML = '<li id="mur-vide"><em>Aucune annonce officielle pour le moment.</em></li>'; } 
+            else { snapshot.forEach((doc) => { const li = document.createElement('li'); li.className = "annonce-officielle"; li.innerHTML = doc.data().texte; liste.appendChild(li); }); }
+        });
+
+        // Messages
+        onSnapshot(query(collection(db, "messages"), orderBy("timestamp", "desc")), (snapshot) => {
+            const liste = document.getElementById('liste-messages');
+            liste.innerHTML = "";
+            if (snapshot.empty) { liste.innerHTML = '<li id="message-vide"><em>Aucun message pour le moment.</em></li>'; } 
+            else { snapshot.forEach((doc) => { const li = document.createElement('li'); li.className = "message-court"; li.innerHTML = doc.data().texte; liste.appendChild(li); }); }
+        });
+
+        // Projets
+        onSnapshot(query(collection(db, "projets"), orderBy("timestamp", "desc")), (snapshot) => {
+            const liste = document.getElementById('liste-projets');
+            liste.innerHTML = "";
+            if (snapshot.empty) { 
+                liste.innerHTML = '<div id="projet-vide" class="projet-carte"><h4>Aucun projet en cours</h4><p>Les projets rédigés par le bureau apparaîtront ici.</p></div>'; 
+            } else { 
+                snapshot.forEach((doc) => { 
+                    const data = doc.data();
+                    const div = document.createElement('div'); div.className = "projet-carte";
+                    div.innerHTML = `<h4>${data.titre}</h4><p>${data.texte}</p><small style="color: #bdc3c7;">Projet publié le ${data.date}</small>`;
+                    liste.appendChild(div); 
+                }); 
+            }
+        });
     </script>
 </body>
 </html>

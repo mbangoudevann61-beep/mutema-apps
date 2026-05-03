@@ -2,7 +2,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-database-compat.js"></script>
 
 <script>
-  // Remplacez ces lignes par vos propres clés trouvées dans la console Firebase
+  // Configuration (Remplace avec tes vraies infos Firebase)
   const firebaseConfig = {
     apiKey: "VOTRE_API_KEY",
     authDomain: "VOTRE_PROJET.firebaseapp.com",
@@ -16,38 +16,29 @@
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  // CONFIGURATION DES IDENTIFIANTS COMMUNS
   const ADMIN_ID = "MUTEMA_ADMIN";
-  const PASS_KEY = "Mutema2026!Global";
+  const PASS_KEY = "Mutema2026!Global"; // MOT DE PASSE COMMUN
 
-  /**
-   * Fonction pour sauvegarder les informations de gestion
-   */
-  function sauvegarderGestion(titreAction, details) {
+  // Cette fonction synchronise ton projet
+  function synchroniser(titre, texte) {
     database.ref('gestion_projet').set({
       utilisateur: ADMIN_ID,
-      action: titreAction,
-      description: details,
-      access_key: PASS_KEY, // Le mot de passe qui valide l'écriture
+      titre: titre,
+      description: texte,
+      access_key: PASS_KEY,
       date: new Date().toLocaleString('fr-FR')
-    })
-    .then(() => {
-      console.log("Synchronisation réussie sur tous les appareils !");
-    })
-    .catch((error) => {
-      console.error("Erreur de permission :", error.message);
+    }).then(() => {
+      console.log("Synchronisé !");
+    }).catch((e) => {
+      console.error("Erreur : ", e.message);
     });
   }
 
-  /**
-   * Lecture automatique : ce qui s'affiche sur le téléphone
-   */
+  // Écoute en temps réel pour ton téléphone
   database.ref('gestion_projet').on('value', (snapshot) => {
     const data = snapshot.val();
-    if (data) {
-      console.log("Mise à jour reçue :", data.action);
-      // Exemple : mettre à jour un élément HTML avec l'ID 'status'
-      // document.getElementById('status').innerHTML = "Dernière action : " + data.action;
+    if (data && document.getElementById('affichage-sync')) {
+      document.getElementById('affichage-sync').innerHTML = "Dernière mise à jour : " + data.titre;
     }
   });
 </script>

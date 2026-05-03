@@ -184,6 +184,7 @@
             font-size: 16px;
             font-weight: bold;
             width: 100%;
+            margin-bottom: 15px;
         }
 
         button.danger-btn {
@@ -210,6 +211,26 @@
 
         .message-court { border-left-color: #0a2d5a; }
         .annonce-officielle { border-left-color: #5b9e38; }
+
+        /* Style spécifique pour l'affichage des projets */
+        .projet-carte {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 6px solid #5b9e38;
+            margin-bottom: 15px;
+        }
+
+        .projet-carte h4 {
+            color: #fff4cc;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+
+        .projet-carte p {
+            color: #ecf0f1;
+            white-space: pre-wrap; /* Conserve les sauts de ligne */
+        }
 
         /* ================= ADAPTATION POUR MOBILE (SMARTPHONES) ================= */
         @media (max-width: 768px) {
@@ -255,7 +276,7 @@
         <button onclick="afficherSection('accueil', this)" class="actif">Accueil</button>
         <button onclick="afficherSection('messages', this)">Messages</button>
         <button onclick="verifierAcces('mur', this, '1604')">Espace Mur</button>
-        <button onclick="verifierAcces('projets', this, '2026')">Projets</button>
+        <button onclick="afficherSection('projets', this)">Projets</button>
         <button onclick="afficherSection('retards', this)">Calculateur de retard</button>
         <button onclick="afficherSection('reglement', this)">Règlement Intérieur</button>
         <button onclick="verifierAcces('gestion', this, '1604')">Espace Gestion</button>
@@ -292,9 +313,22 @@
 
         <section id="projets" class="rubrique">
             <h3>Projets de l'Association</h3>
-            <p><strong>Espace réservé au bureau pour détailler les projets.</strong></p>
-            <div id="contenu-projets">
-                <p>Ici seront rédigés et détaillés les différents projets choisis par l'association MUTEMA.</p>
+            <p>Voici les projets en cours de l'association MUTEMA. Tous les membres peuvent consulter l'évolution des projets ici.</p>
+            
+            <button class="action-btn" onclick="ouvrirRedactionProjet()" style="background: linear-gradient(135deg, #c19b48, #9e7b32); box-shadow: 0 4px 15px rgba(193, 155, 72, 0.4);">✍️ Rédiger / Modifier un projet (Bureau uniquement)</button>
+
+            <div id="zone-redaction-projet" style="display: none; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #c19b48;">
+                <h4 style="margin-top: 0; color: #fff4cc;">Rédaction d'un nouveau projet</h4>
+                <input type="text" id="titre-projet" placeholder="Titre du projet..." style="margin-bottom: 10px;">
+                <textarea id="texte-projet" rows="6" placeholder="Détails, objectifs et budget du projet..."></textarea>
+                <button class="action-btn" onclick="enregistrerProjet()">Enregistrer et Publier le projet</button>
+            </div>
+
+            <div id="liste-projets">
+                <div id="projet-vide" class="projet-carte">
+                    <h4>Aucun projet en cours</h4>
+                    <p>Les projets rédigés par le bureau apparaîtront ici.</p>
+                </div>
             </div>
         </section>
 
@@ -354,8 +388,7 @@
     </main>
 
     <script>
-        // Le code JavaScript a été nettoyé de toutes les balises parasites
-
+        // NAVIGATION GÉNÉRALE
         function afficherSection(idSection, bouton) {
             document.querySelectorAll('.rubrique').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('nav button').forEach(b => b.classList.remove('actif'));
@@ -363,6 +396,7 @@
             if(bouton) bouton.classList.add('actif');
         }
 
+        // SÉCURITÉ DES ONGLETS COMPLETS (ex: Gestion et Mur avec 1604)
         function verifierAcces(idSection, bouton, codeSecret) {
             let saisie = prompt("Zone sécurisée. Code d'accès :");
             if (saisie === codeSecret) {
@@ -372,6 +406,63 @@
             }
         }
 
+        // ================= GESTION DES PROJETS (Code: 2026) =================
+        function ouvrirRedactionProjet() {
+            let saisie = prompt("Code d'accès requis (Président & Com) :");
+            if (saisie === "2026") {
+                // Si le code est bon, on affiche le formulaire
+                document.getElementById('zone-redaction-projet').style.display = 'block';
+            } else if (saisie !== null) {
+                alert("Code d'accès incorrect !");
+            }
+        }
+
+        function enregistrerProjet() {
+            const titre = document.getElementById('titre-projet').value;
+            const texte = document.getElementById('texte-projet').value;
+
+            if(titre.trim() !== "" && texte.trim() !== "") {
+                const zoneProjets = document.getElementById('liste-projets');
+                
+                // Enlever le message "Aucun projet" s'il est là
+                const projetVide = document.getElementById('projet-vide');
+                if(projetVide) projetVide.remove();
+
+                // Création de la carte du projet
+                const divProjet = document.createElement('div');
+                divProjet.className = "projet-carte";
+
+                const h4 = document.createElement('h4');
+                h4.textContent = titre;
+
+                const p = document.createElement('p');
+                p.textContent = texte;
+
+                const dateHeure = new Date().toLocaleDateString('fr-FR');
+                const petitTexte = document.createElement('small');
+                petitTexte.style.color = "#bdc3c7";
+                petitTexte.textContent = "Projet publié le " + dateHeure;
+
+                // Assemblage
+                divProjet.appendChild(h4);
+                divProjet.appendChild(p);
+                divProjet.appendChild(petitTexte);
+
+                // Ajout en haut de la liste
+                zoneProjets.prepend(divProjet);
+
+                // Réinitialisation du formulaire
+                document.getElementById('titre-projet').value = "";
+                document.getElementById('texte-projet').value = "";
+                document.getElementById('zone-redaction-projet').style.display = 'none'; // On recache le formulaire
+
+                alert("Projet enregistré et publié avec succès !");
+            } else {
+                alert("Veuillez remplir le titre et les détails du projet.");
+            }
+        }
+
+        // ================= AUTRES FONCTIONNALITÉS =================
         function validerPaiement() {
             const membre = document.getElementById('gestion-membre').value;
             const mois = document.getElementById('gestion-mois').value;

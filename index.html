@@ -1,346 +1,171 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Association MUTEMA</title>
-  <style>
-    /* DESIGN DE NUIT ET ANIMATIONS */
-    body {
-      background-color: #0b132b; /* Bleu sombre nuit */
-      color: #ffffff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUTEMA - Rigueur & Discipline</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #00d4ff;
+            --bg-color: #0a0b10;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
 
-    /* ANIMATIONS DES COEURS ET NUAGES */
-    .coeur {
-      position: fixed;
-      font-size: 24px;
-      animation: flotter 4s infinite ease-in-out alternate;
-      opacity: 0.8;
-      z-index: -1;
-    }
-    .coeur1 { top: 10%; left: 10%; color: #4caf50; animation-delay: 0s; } /* Vert */
-    .coeur2 { top: 20%; left: 80%; color: #d4af37; animation-delay: 1s; } /* Doré */
-    .coeur3 { top: 70%; left: 15%; color: #1c2541; animation-delay: 2s; } /* Bleu */
-    .coeur4 { top: 60%; left: 85%; color: #4caf50; animation-delay: 1.5s; }
-    .coeur5 { top: 40%; left: 50%; color: #d4af37; animation-delay: 0.5s; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
 
-    @keyframes flotter {
-      0% { transform: translateY(0) scale(1); }
-      100% { transform: translateY(-20px) scale(1.1); }
-    }
+        /* Design du bouton Paramètres (Roue dentée) */
+        .settings-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
 
-    /* EN-TÊTE */
-    .header {
-      text-align: center;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.6);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    }
-    .titre-mutema {
-      color: #d4af37; /* Doré Pro */
-      font-size: 2.8em;
-      margin: 0;
-      text-shadow: 2px 2px 5px black, 0 0 15px #d4af37;
-      letter-spacing: 2px;
-    }
-    .slogan {
-      color: #4caf50; /* Vert */
-      font-weight: bold;
-      letter-spacing: 3px;
-      margin-top: 10px;
-      text-shadow: 1px 1px 3px black;
-    }
-    .bureau {
-      font-size: 0.9em;
-      margin-top: 15px;
-      color: #a0c4ff;
-      line-height: 1.5;
-    }
+        .settings-btn:hover {
+            transform: rotate(90deg);
+        }
 
-    /* NAVIGATION */
-    .nav {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      background: #1c2541;
-      padding: 10px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    }
-    .nav button {
-      background: #3a506b;
-      color: white;
-      border: 1px solid #d4af37;
-      padding: 10px 15px;
-      margin: 5px;
-      cursor: pointer;
-      border-radius: 5px;
-      font-weight: bold;
-      transition: all 0.3s;
-    }
-    .nav button:hover {
-      background: #d4af37;
-      color: #0b132b;
-      transform: scale(1.05);
-    }
+        /* Fenêtre des paramètres (Modal) */
+        #settingsModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #151921;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid var(--primary-color);
+            z-index: 2000;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
 
-    /* SECTIONS */
-    .section {
-      display: none;
-      padding: 20px;
-      max-width: 800px;
-      margin: 20px auto;
-      background: rgba(28, 37, 65, 0.8);
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-    }
-    .active {
-      display: block;
-      animation: fadeIn 0.5s;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 20px;
+        }
 
-    h2 { color: #d4af37; border-bottom: 2px solid #4caf50; padding-bottom: 5px; }
-    
-    /* FORMULAIRES ET BOUTONS INTERNES */
-    select, input, textarea, button.action-btn {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
-      border: 1px solid #d4af37;
-      background: #0b132b;
-      color: white;
-      box-sizing: border-box;
-    }
-    button.action-btn {
-      background: #4caf50;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-    }
-    button.action-btn:hover { background: #45a049; }
+        .local-mode { background: #ffcc00; color: black; }
+        .online-mode { background: #00ff88; color: black; }
 
-    /* RÈGLEMENT INTÉRIEUR */
-    .article { margin-bottom: 20px; text-align: justify; }
-    .article h3 { color: #4caf50; margin-bottom: 5px; }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: #0a0b10;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 5px;
+        }
 
-    /* RESPONSIVE MOBILE */
-    @media (max-width: 600px) {
-      .titre-mutema { font-size: 2em; }
-      .nav { flex-direction: column; }
-      .nav button { width: 100%; margin: 5px 0; }
-      .bureau { font-size: 0.8em; }
-    }
-  </style>
+        button.save-btn {
+            background: var(--primary-color);
+            color: black;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Animation de fond */
+        .stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle, #1b2735 0%, #090a0f 100%);
+        }
+    </style>
 </head>
 <body>
 
-  <div class="coeur coeur1">💚</div>
-  <div class="coeur coeur2">💛</div>
-  <div class="coeur coeur3">💙</div>
-  <div class="coeur coeur4">💚</div>
-  <div class="coeur coeur5">💛</div>
+    <div class="stars"></div>
 
-  <div class="header">
-    <h1 class="titre-mutema">ASSOCIATION MUTEMA</h1>
-    <p class="slogan">DISCIPLINE • RIGUEUR • ENTRAIDE</p>
-    <div class="bureau">
-      <strong>Le Bureau :</strong><br>
-      Président : Kamara | Trésorière : Bermine | Discipline : Caprisse Auderey<br>
-      Communication : Devann & Carol Charonne
-    </div>
-  </div>
+    <button class="settings-btn" onclick="openSettings()">
+        <i class="fas fa-cog fa-2x"></i>
+    </button>
 
-  <div class="nav">
-    <button onclick="afficherSection('accueil')">Accueil</button>
-    <button onclick="afficherSection('messages')">Messages</button>
-    <button onclick="demanderCode('mur', '1604')">Espace Mur</button>
-    <button onclick="demanderCode('projets', '2026')">Projets</button>
-    <button onclick="afficherSection('retard')">Calcul Retard</button>
-    <button onclick="afficherSection('reglement')">Règlement</button>
-    <button onclick="demanderCode('gestion', '1604')">Espace Gestion</button>
-  </div>
+    <header style="text-align: center;">
+        <h1 style="color: var(--primary-color); margin-bottom: 5px;">MUTEMA</h1>
+        <p style="font-style: italic; opacity: 0.8;">Rigueur & Discipline</p>
+        <div id="connectionStatus" class="status-badge local-mode">Mode : Version Locale (Hors-ligne)</div>
+    </header>
 
-  <div id="accueil" class="section active">
-    <h2>Bienvenue sur MUTEMA</h2>
-    <p>Bienvenue sur l'application officielle de l'association. Utilisez le menu ci-dessus pour naviguer.</p>
-    <p style="color: #4caf50; font-style: italic;">Version locale (Mode sans connexion externe activé).</p>
-  </div>
-
-  <div id="messages" class="section">
-    <h2>Messages Rapides</h2>
-    <input type="text" id="input-msg" placeholder="Écrire un message court...">
-    <button class="action-btn" onclick="ajouterMessage('liste-messages', 'input-msg')">Envoyer</button>
-    <ul id="liste-messages" style="list-style: none; padding: 0;"></ul>
-  </div>
-
-  <div id="mur" class="section">
-    <h2>Espace Mur (Annonces Officielles)</h2>
-    <textarea id="input-mur" rows="3" placeholder="Rédiger une annonce officielle..."></textarea>
-    <button class="action-btn" onclick="ajouterMessage('liste-mur', 'input-mur')">Publier l'annonce</button>
-    <div id="liste-mur" style="margin-top: 20px;"></div>
-  </div>
-
-  <div id="projets" class="section">
-    <h2>Espace Projets</h2>
-    <textarea id="input-projet" rows="5" placeholder="Rédiger les détails du projet ici..."></textarea>
-    <button class="action-btn" onclick="ajouterMessage('liste-projets', 'input-projet')">Enregistrer le projet</button>
-    <div id="liste-projets" style="margin-top: 20px;"></div>
-  </div>
-
-  <div id="retard" class="section">
-    <h2>Calculateur de Retard</h2>
-    <p>Heure limite : 14h30. Pénalité de base : 500 FCFA. Double chaque 30 min.</p>
-    <select id="temps-retard">
-      <option value="0">Avant 14h30 (À l'heure)</option>
-      <option value="500">14h30 - 15h00 (Retard niveau 1)</option>
-      <option value="1000">15h00 - 15h30 (Retard niveau 2)</option>
-      <option value="2000">15h30 - 16h00 (Retard niveau 3)</option>
-      <option value="4000">16h00 - 16h30 (Retard niveau 4)</option>
-    </select>
-    <button class="action-btn" onclick="calculerRetard()">Calculer l'amende</button>
-    <h3 id="resultat-retard" style="color: #d4af37; text-align: center;"></h3>
-  </div>
-
-  <div id="reglement" class="section">
-    <h2>Règlement Intérieur</h2>
-    <div class="article">
-      <h3>PRÉAMBULE</h3>
-      <p>Le présent règlement intérieur a pour objet de compléter les statuts de l'Association MUTEMA. Il définit les modalités de fonctionnement interne...</p>
-    </div>
-    <div class="article">
-      <h3>ARTICLE 1 : ADHÉSION ET MEMBRE</h3>
-      <p>L'adhésion est libre et ouverte à toute personne physique ou morale partageant les idéaux de l'association. Les membres actifs participent assidûment et paient leurs cotisations.</p>
-    </div>
-    <div class="article">
-      <h3>ARTICLE 2 : ASSEMBLÉES ET RÉCEPTIONS</h3>
-      <p>Les réunions se tiennent le 5 de chaque mois à 14h00, de manière tournante. Défaillance injustifiée : amende de 5 000 FCFA.</p>
-    </div>
-    <div class="article">
-      <h3>ARTICLE 3 : PONCTUALITÉ ET DISCIPLINE</h3>
-      <p>Retard après 14h30 : 500 FCFA (somme doublée chaque 30 min). Défaut de tenue : 2 000 FCFA. Impolitesse : 1 000 FCFA.</p>
-    </div>
-    <div class="article">
-      <h3>ARTICLE 4 & 5 : FINANCES ET SOLIDARITÉ</h3>
-      <p>Caisse Noire: 1000 FCFA/mois. Épargne: 1000 FCFA/mois. Collation: 5000 FCFA. Décès/Santé: 5000 FCFA. Nouveau-né: 3000 FCFA. Mariage: 10000 FCFA.</p>
-    </div>
-    <div class="article">
-      <p><em>(Le règlement s'applique jusqu'à l'Article 10, relatif à la révision du règlement par l'Assemblée Générale).</em></p>
-    </div>
-  </div>
-
-  <div id="gestion" class="section">
-    <h2>Espace Gestion Financière</h2>
-    <label>Mois de paiement :</label>
-    <select id="mois-paiement">
-      <option>Janvier</option><option>Février</option><option>Mars</option><option>Avril</option>
-      <option>Mai</option><option>Juin</option><option>Juillet</option><option>Août</option>
-      <option>Septembre</option><option>Octobre</option><option>Novembre</option><option>Décembre</option>
-    </select>
-
-    <label>Membre :</label>
-    <select id="membre-paiement">
-      <option>Kamara</option><option>Devann</option><option>Bermine</option>
-      <option>Caprisse auderey</option><option>Carol Charonne</option><option>Syntiche promesse</option>
-      <option>Aurnelia</option><option>Alicia</option><option>carolle</option>
-      <option>Achille</option><option>Carmela</option><option>Jolene</option>
-      <option>Éric</option><option>Didier</option>
-    </select>
-
-    <label>Type de fond :</label>
-    <select id="type-paiement">
-      <option>Caisse Noire (1000 FCFA)</option>
-      <option>Épargne (1000 FCFA)</option>
-      <option>Collation (5000 FCFA)</option>
-      <option>Solidarité - Maladie (5000 FCFA)</option>
-      <option>Solidarité - Décès (5000 FCFA)</option>
-      <option>Solidarité - Nouveau né (3000 FCFA)</option>
-      <option>Solidarité - Fiançailles (5000 FCFA)</option>
-      <option>Solidarité - Mariage (10000 FCFA)</option>
-    </select>
-
-    <button class="action-btn" onclick="enregistrerPaiement()">Valider le paiement</button>
-    
-    <h3 style="margin-top:20px; color:#4caf50;">Historique local de la session :</h3>
-    <ul id="historique-paiements" style="list-style: none; padding: 0;"></ul>
-  </div>
-
-  <script>
-    // Affichage des sections
-    function afficherSection(id) {
-      const sections = document.querySelectorAll('.section');
-      sections.forEach(sec => sec.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-    }
-
-    // Gestion de la sécurité
-    function demanderCode(sectionId, codeRequis) {
-      let essai = prompt("Veuillez entrer le code d'accès de sécurité :");
-      if (essai === codeRequis) {
-        afficherSection(sectionId);
-      } else if (essai !== null) {
-        alert("Code incorrect ! Accès refusé.");
-      }
-    }
-
-    // Calculateur de retard
-    function calculerRetard() {
-      let amende = document.getElementById('temps-retard').value;
-      if(amende == "0") {
-        document.getElementById('resultat-retard').innerText = "Membre à l'heure. Aucune amende.";
-      } else {
-        document.getElementById('resultat-retard').innerText = "Amende à payer : " + amende + " FCFA";
-      }
-    }
-
-    // Ajout de texte (Messages, Mur, Projets)
-    function ajouterMessage(listeId, inputId) {
-      let texte = document.getElementById(inputId).value;
-      if(texte.trim() !== "") {
-        let date = new Date().toLocaleString('fr-FR');
-        let div = document.createElement('div');
-        div.style.background = "#1c2541";
-        div.style.padding = "10px";
-        div.style.margin = "10px 0";
-        div.style.borderLeft = "4px solid #d4af37";
-        div.innerHTML = "<small style='color:#4caf50'>" + date + "</small><br>" + texte;
+    <div id="settingsModal">
+        <h2 style="margin-top: 0;">Paramètres Système</h2>
         
-        document.getElementById(listeId).prepend(div);
-        document.getElementById(inputId).value = ""; // Vider le champ
-      }
-    }
+        <label>URL Base de Données (Firebase) :</label>
+        <input type="text" id="dbUrl" placeholder="https://votre-projet.firebaseio.com">
+        
+        <label>Historique des activités :</label>
+        <div id="historyLogs" style="height: 100px; overflow-y: auto; background: #000; padding: 10px; font-size: 0.8em; margin-bottom: 15px;">
+            -- Aucun historique disponible --
+        </div>
 
-    // Enregistrement des paiements (Local)
-    function enregistrerPaiement() {
-      let mois = document.getElementById('mois-paiement').value;
-      let membre = document.getElementById('membre-paiement').value;
-      let type = document.getElementById('type-paiement').value;
-      let date = new Date().toLocaleString('fr-FR');
+        <button class="save-btn" onclick="saveSettings()">ACTIVER LA CONNEXION</button>
+        <button onclick="closeSettings()" style="background:none; border:none; color:gray; width:100%; margin-top:10px; cursor:pointer;">Fermer</button>
+    </div>
 
-      let texte = `[${date}] ${membre} a payé : ${type} (Mois: ${mois})`;
-      
-      let li = document.createElement('li');
-      li.style.background = "#3a506b";
-      li.style.margin = "5px 0";
-      li.style.padding = "10px";
-      li.style.borderRadius = "5px";
-      li.innerText = texte;
+    <main>
+        <p style="text-align: center; margin-top: 50px;">Bienvenue dans l'espace de gestion de l'association.</p>
+    </main>
 
-      document.getElementById('historique-paiements').prepend(li);
-      alert("Paiement validé avec succès (Sauvegarde locale uniquement) !");
-    }
-  </script>
+    <script>
+        function openSettings() {
+            const code = prompt("Entrez le code d'accès administrateur :");
+            if (code === "1604") {
+                document.getElementById('settingsModal').style.display = 'block';
+            } else {
+                alert("Code incorrect ! Access refusé.");
+            }
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        function saveSettings() {
+            const url = document.getElementById('dbUrl').value;
+            if (url.includes("firebaseio.com")) {
+                localStorage.setItem('mutema_db_url', url);
+                alert("Connexion enregistrée ! L'application va maintenant tenter de se synchroniser.");
+                location.reload(); // Recharge pour appliquer
+            } else {
+                alert("Veuillez entrer une URL Firebase valide.");
+            }
+        }
+
+        // Vérification de la connexion au chargement
+        window.onload = function() {
+            const savedUrl = localStorage.getItem('mutema_db_url');
+            const statusBadge = document.getElementById('connectionStatus');
+            if (savedUrl) {
+                statusBadge.innerHTML = "Mode : Connecté au Réseau";
+                statusBadge.className = "status-badge online-mode";
+                document.getElementById('dbUrl').value = savedUrl;
+            }
+        };
+    </script>
 </body>
 </html>

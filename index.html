@@ -3,64 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUTEMA - Application Associative</title>
+    <title>MUTEMA - Application de gestion (Nuit Animée)</title>
     <style>
-        /* ================= ANIMATIONS & ARRIÈRE-PLAN ================= */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
-        }
-
-        @keyframes drift {
-            from { transform: translateX(-10vw); }
-            to { transform: translateX(100vw); }
-        }
+        /* ================= ANIMATIONS & DESIGN DE NUIT ================= */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-15px) scale(1.1); } 100% { transform: translateY(0px) scale(1); } }
+        @keyframes drift { from { transform: translateX(-10vw); } to { transform: translateX(100vw); } }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            /* Arrière-plan ciel */
-            background: linear-gradient(to bottom, #a1c4fd 0%, #c2e9fb 100%);
-            color: #333;
+            /* Fond de nuit */
+            background: linear-gradient(to bottom, #001a33 0%, #003366 100%);
+            color: #ecf0f1;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* Décorations flottantes (Nuages et Cœurs Bleus) */
+        /* Décorations flottantes (Cœurs bleus Jean et Nuages de nuit) */
         .decor {
-            position: absolute;
+            position: fixed;
             font-size: 2rem;
-            opacity: 0.6;
+            opacity: 0.5;
             z-index: -1;
             pointer-events: none;
+            color: #3498db; /* Bleu Jean */
         }
-        .decor.nuage { font-size: 4rem; opacity: 0.4; animation: drift 40s linear infinite; }
+        .decor.nuage { font-size: 4rem; opacity: 0.2; animation: drift 50s linear infinite; color: #ecf0f1; }
         .decor.coeur { animation: float 6s ease-in-out infinite; }
         
+        /* Cœurs bleus Jean partout (style-là partout) [cite: 4] */
         .d1 { top: 10%; left: 10%; animation-delay: 0s; }
-        .d2 { top: 30%; left: -10%; animation-duration: 35s; }
+        .d2 { top: 30%; left: -10%; animation-duration: 40s; }
         .d3 { top: 50%; left: 80%; animation-delay: 2s; }
-        .d4 { top: 70%; left: -5%; animation-duration: 45s; }
+        .d4 { top: 70%; left: -5%; animation-duration: 50s; }
         .d5 { top: 20%; left: 70%; animation-delay: 1s; }
         .d6 { top: 80%; left: 30%; animation-delay: 3s; }
+        .d7 { top: 40%; left: 50%; animation-delay: 4s; }
+        .d8 { top: 60%; left: 20%; animation-delay: 5s; }
 
-        /* ================= EN-TÊTE & DESIGN DORÉ ================= */
+        /* ================= EN-TÊTE & STYLE DORÉ  ================= */
         header {
-            background: rgba(26, 37, 47, 0.9);
+            background: rgba(13, 20, 26, 0.95);
             color: white;
             text-align: center;
             padding: 30px 10px;
-            border-bottom: 5px solid #d4af37;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-bottom: 5px solid #d4af37; /* Doré */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             animation: fadeIn 1s ease-out;
+            position: relative;
+            z-index: 10;
         }
 
         header h1 {
@@ -79,12 +73,12 @@
             font-style: italic;
             font-size: 18px;
             margin: 10px 0 20px 0;
-            color: #ecf0f1;
+            color: #bdc3c7;
             letter-spacing: 1px;
         }
 
         .bureau-membres {
-            background: linear-gradient(135deg, #2c3e50, #34495e);
+            background: linear-gradient(135deg, #1a252f, #2c3e50);
             padding: 15px;
             font-size: 15px;
             display: flex;
@@ -94,28 +88,29 @@
             border-radius: 10px;
             max-width: 900px;
             margin: 0 auto;
-            border: 1px solid #d4af37;
+            border: 1px solid #d4af37; /* Doré */
         }
 
         .bureau-membres span {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
             padding: 8px 15px;
             border-radius: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
             transition: transform 0.3s;
+            color: #ecf0f1;
         }
         .bureau-membres span:hover {
             transform: scale(1.05);
-            background: rgba(212, 175, 55, 0.2);
+            background: rgba(212, 175, 55, 0.15); /* Doré transparent */
         }
 
         /* ================= NAVIGATION ================= */
         nav {
             display: flex;
             justify-content: center;
-            background-color: rgba(52, 73, 94, 0.95);
+            background-color: rgba(26, 37, 47, 0.98);
             flex-wrap: wrap;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -134,8 +129,8 @@
         }
 
         nav button:hover, nav button.actif {
-            background-color: rgba(212, 175, 55, 0.2);
-            border-bottom: 3px solid #d4af37;
+            background-color: rgba(212, 175, 55, 0.1);
+            border-bottom: 3px solid #d4af37; /* Doré */
             color: #fcf6ba;
         }
 
@@ -150,11 +145,12 @@
 
         .rubrique {
             display: none;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(13, 20, 26, 0.9);
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
             animation: fadeIn 0.5s ease-out;
+            border: 1px solid rgba(212, 175, 55, 0.2);
         }
 
         .rubrique.active {
@@ -162,8 +158,8 @@
         }
 
         h3 {
-            color: #2c3e50;
-            border-bottom: 3px solid #d4af37;
+            color: #fcf6ba;
+            border-bottom: 3px solid #d4af37; /* Doré */
             padding-bottom: 10px;
             margin-top: 0;
             font-size: 1.8em;
@@ -173,20 +169,22 @@
             width: 100%;
             padding: 12px;
             margin: 10px 0 20px 0;
-            border: 2px solid #bdc3c7;
+            border: 2px solid #2c3e50;
             border-radius: 8px;
             box-sizing: border-box;
             font-family: inherit;
+            background-color: #0d141a;
+            color: #ecf0f1;
             transition: border-color 0.3s;
         }
         
         textarea:focus, select:focus, input:focus {
-            border-color: #d4af37;
+            border-color: #d4af37; /* Doré */
             outline: none;
         }
 
         button.action-btn {
-            background: linear-gradient(135deg, #d4af37, #aa771c);
+            background: linear-gradient(135deg, #d4af37, #aa771c); /* Doré */
             color: white;
             border: none;
             padding: 15px 30px;
@@ -204,7 +202,7 @@
         }
 
         button.danger-btn {
-            background-color: #e74c3c;
+            background-color: #c0392b;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -215,20 +213,22 @@
             transition: background 0.3s;
         }
 
-        button.danger-btn:hover { background-color: #c0392b; }
+        button.danger-btn:hover { background-color: #e74c3c; }
 
         ul { list-style-type: none; padding: 0; }
         ul li {
-            background: white;
+            background: rgba(255, 255, 255, 0.03);
             margin-bottom: 12px;
             padding: 15px;
             border-radius: 8px;
-            border-left: 6px solid #d4af37;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 6px solid #d4af37; /* Doré */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             animation: fadeIn 0.4s ease-out;
+            color: #bdc3c7;
         }
 
-        .message-court { border-left-color: #3498db; }
+        .message-court { border-left-color: #3498db; } /* Bleu Jean */
+        .annonce-officielle { border-left-color: #f1c40f; } /* Jaune/Or pour le Mur */
     </style>
 </head>
 <body>
@@ -239,6 +239,8 @@
     <div class="decor nuage d4">☁️</div>
     <div class="decor coeur d5">💙</div>
     <div class="decor coeur d6">💙</div>
+    <div class="decor coeur d7">💙</div>
+    <div class="decor coeur d8">💙</div>
 
     <header>
         <h1>MUTEMA</h1>
@@ -254,6 +256,7 @@
     <nav>
         <button onclick="afficherSection('accueil', this)" class="actif">Accueil</button>
         <button onclick="afficherSection('messages', this)">Messages</button>
+        <button onclick="verifierAcces('mur', this, '1604')">Espace Mur</button>
         <button onclick="verifierAcces('projets', this, '2026')">Projets</button>
         <button onclick="afficherSection('retards', this)">Calculateur de retard</button>
         <button onclick="afficherSection('reglement', this)">Règlement Intérieur</button>
@@ -277,9 +280,21 @@
             <ul id="liste-messages"></ul>
         </section>
 
+        <section id="mur" class="rubrique">
+            <h3>Espace Mur (Annonces Officielles)</h3>
+            <p><strong>Espace réservé au bureau pour les annonces officielles[cite: 6, 11].</strong></p>
+            <div class="formulaire-annonce">
+                <textarea id="champ-annonce" placeholder="Rédiger une annonce officielle..."></textarea>
+                <button class="action-btn" onclick="publierAnnonce()">Publier l'annonce</button>
+            </div>
+            <ul id="liste-annonces">
+                <li id="mur-vide"><em>Aucune annonce officielle pour le moment.</em></li>
+            </ul>
+        </section>
+
         <section id="projets" class="rubrique">
             <h3>Projets de l'Association</h3>
-            <p><strong>Espace réservé au Président et aux Chargés de communication.</strong></p>
+            <p><strong>Espace réservé au bureau pour détailler les projets[cite: 11].</strong></p>
             <div id="contenu-projets">
                 <p>Ici seront rédigés et détaillés les différents projets choisis par l'association MUTEMA.</p>
             </div>
@@ -297,30 +312,24 @@
         <section id="reglement" class="rubrique">
             <h3>Règlement Intérieur de MUTEMA</h3>
             <div id="texte-reglement">
-                <p><em>Le texte du règlement est sauvegardé. (J'ai masqué le texte complet ici pour raccourcir l'aperçu, mais tu peux coller les articles de la version précédente ici).</em></p>
+                <p><em>Le texte du règlement est sauvegardé. (Collez les articles complets de la version précédente ici).</em></p>
             </div>
         </section>
 
         <section id="gestion" class="rubrique">
             <h3>Espace Gestion des Finances</h3>
+            <p><strong>Espace réservé à la trésorerie[cite: 11].</strong></p>
             <div class="formulaire-gestion">
                 <label>Membre ayant payé :</label>
                 <select id="gestion-membre">
-                    <option value="Kamara">Kamara</option>
-                    <option value="Devann">Devann</option>
-                    <option value="Bermine">Bermine</option>
-                    <option value="Caprisse Auderey">Caprisse Auderey</option>
-                    <option value="Carol Charonne">Carol Charonne</option>
-                    <option value="Syntiche Promesse">Syntiche Promesse</option>
-                    <option value="Aurnelia">Aurnelia</option>
-                    <option value="Alicia Carolle">Alicia Carolle</option>
-                    <option value="Achille">Achille</option>
-                    <option value="Carmela">Carmela</option>
-                    <option value="Jolene">Jolene</option>
-                    <option value="Éric Didier">Éric Didier</option>
+                    <option>Kamara</option><option>Devann</option><option>Bermine</option>
+                    <option>Caprisse Auderey</option><option>Carol Charonne</option>
+                    <option>Syntiche Promesse</option><option>Aurnelia</option>
+                    <option>Alicia Carolle</option><option>Achille</option>
+                    <option>Carmela</option><option>Jolene</option><option>Éric Didier</option>
                 </select>
 
-                <label>Mois concerné / Évènement :</label>
+                <label>Mois / Évènement :</label>
                 <select id="gestion-mois">
                     <option>Janvier</option><option>Février</option><option>Mars</option>
                     <option>Avril</option><option>Mai</option><option>Juin</option>
@@ -329,25 +338,26 @@
                     <option>Hors-Mois (Évènementiel)</option>
                 </select>
 
-                <label>Type de fond / Motif :</label>
+                <label>Type de fond :</label>
                 <select id="gestion-fond">
-                    <option value="Caisse Noire (1000 FCFA)">Caisse Noire (1000 FCFA)</option>
-                    <option value="Caisse d'Épargne (1000 FCFA)">Caisse d'Épargne (1000 FCFA)</option>
-                    <option value="Collation (5000 FCFA)">Collation (5000 FCFA)</option>
-                    <option value="Soutien Santé (5000 FCFA)">Soutien Santé (5000 FCFA)</option>
-                    <option value="Soutien Décès (5000 FCFA)">Soutien Décès (5000 FCFA)</option>
-                    <option value="Nouveau-né (3000 FCFA)">Nouveau-né (3000 FCFA)</option>
-                    <option value="Fiançailles (5000 FCFA)">Fiançailles (5000 FCFA)</option>
-                    <option value="Mariage (10000 FCFA)">Mariage (10000 FCFA)</option>
-                    <option value="Soutien aux projets (5000 FCFA)">Soutien aux projets (5000 FCFA)</option>
+                    <option>Caisse Noire (1000 FCFA)</option>
+                    <option>Caisse d'Épargne (1000 FCFA)</option>
+                    <option>Collation (5000 FCFA)</option>
+                    <option>Soutien Santé (5000 FCFA)</option>
+                    <option>Soutien Décès (5000 FCFA)</option>
+                    <option>Nouveau-né (3000 FCFA)</option>
+                    <option>Fiançailles (5000 FCFA)</option>
+                    <option>Mariage (10000 FCFA)</option>
+                    <option>Soutien aux projets (5000 FCFA)</option>
                 </select>
 
-                <button class="action-btn" onclick="validerPaiement()">Enregistrer le paiement</button>
+                <button class="action-btn" onclick="validerPaiement()">Enregistrer paiement</button>
             </div>
         </section>
     </main>
 
     <script>
+        // 1. Navigation entre les onglets
         function afficherSection(idSection, bouton) {
             document.querySelectorAll('.rubrique').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('nav button').forEach(b => b.classList.remove('actif'));
@@ -355,8 +365,10 @@
             if(bouton) bouton.classList.add('actif');
         }
 
+        // 2. Sécurité : Codes d'accès [cite: 11]
+        // Mur & Gestion : 1604, Projets : 2026, Historique (admin) : admin123
         function verifierAcces(idSection, bouton, codeSecret) {
-            let saisie = prompt("Zone sécurisée. Code d'accès :");
+            let saisie = prompt("Zone sécurisée. Code d'accès[cite: 11]:");
             if (saisie === codeSecret) {
                 afficherSection(idSection, bouton);
             } else if (saisie !== null) {
@@ -364,19 +376,14 @@
             }
         }
 
-        function effacerHistorique() {
-            if(prompt("Code administrateur :") === "admin123") {
-                document.getElementById('liste-historique').innerHTML = '<li id="historique-vide"><em>Aucun paiement enregistré.</em></li>';
-            }
-        }
-
+        // 3. Gestion : Validation paiement
         function validerPaiement() {
             const membre = document.getElementById('gestion-membre').value;
             const mois = document.getElementById('gestion-mois').value;
             const fond = document.getElementById('gestion-fond').value;
             const date = new Date().toLocaleDateString('fr-FR');
             
-            const texte = `✅ ${date} : ${membre} a payé [${fond}] pour ${mois}.`;
+            const texte = `✅ ${date} : ${membre} a payé [${cite: fond}] pour ${mois}.`;
             if(document.getElementById('historique-vide')) document.getElementById('historique-vide').remove();
             
             const li = document.createElement('li');
@@ -387,25 +394,51 @@
             afficherSection('accueil', document.querySelector('nav button'));
         }
 
+        // 4. Admin : Effacer historique (Code: admin123)
+        function effacerHistorique() {
+            if(prompt("Code administrateur :") === "admin123") {
+                document.getElementById('liste-historique').innerHTML = '<li id="historique-vide"><em>Aucun paiement enregistré.</em></li>';
+                alert("Historique effacé.");
+            }
+        }
+
+        // 5. Mur : Publier Annonce Officielle
+        function publierAnnonce() {
+            const texte = document.getElementById('champ-annonce').value;
+            if(texte.trim() !== "") {
+                const li = document.createElement('li');
+                li.className = "annonce-officielle"; // Style spécial pour le Mur [cite: 6]
+                const dateHeure = new Date().toLocaleString('fr-FR', { hour: '2-digit', minute:'2-digit', day:'2-digit', month:'2-digit' });
+                li.innerHTML = `📢 <strong> ANNONCE OFFICIELLE :</strong> ${texte}`;
+                if(document.getElementById('mur-vide')) document.getElementById('mur-vide').remove();
+                document.getElementById('liste-annonces').prepend(li);
+                document.getElementById('champ-annonce').value = ""; // Vider champ
+                alert("Annonce publiée !");
+            } else { alert("L'annonce est vide."); }
+        }
+
+        // 6. Messages Express
         function publierMessage() {
             const texte = document.getElementById('champ-message').value;
             if(texte.trim() !== "") {
                 const li = document.createElement('li');
                 li.className = "message-court";
                 const dateHeure = new Date().toLocaleString('fr-FR', { hour: '2-digit', minute:'2-digit', day:'2-digit', month:'2-digit' });
-                li.innerHTML = `<strong>[${dateHeure}]</strong> ${texte}`;
+                li.innerHTML = `💬 <strong></strong> ${texte}`;
                 document.getElementById('liste-messages').prepend(li);
                 document.getElementById('champ-message').value = ""; 
             }
         }
 
+        // 7. Calculateur de retard (Art. 3)
         function calculerRetard() {
             const min = parseInt(document.getElementById('minutes-retard').value);
             if(min > 0) {
+                // 500F premier retard, doublé toutes les 30 min supp.
                 const tranches = Math.ceil(min / 30);
                 const amende = 500 * Math.pow(2, tranches - 1);
-                document.getElementById('resultat-retard').textContent = `Amende : ${amende} FCFA.`;
-            }
+                document.getElementById('resultat-retard').textContent = `Pour ${min} minute(s) de retard, l'amende s'élève à : ${amende} FCFA.`;
+            } else { document.getElementById('resultat-retard').textContent = ""; }
         }
     </script>
 </body>
